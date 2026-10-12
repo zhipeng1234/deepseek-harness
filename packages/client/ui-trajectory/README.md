@@ -1,5 +1,5 @@
 ---
-description: "Trajectory view for the dsh web client: a turn-aware event ledger with an interactive timing overview, registered into the conversation view ring."
+description: "Trajectory and Workflow views for the dsh client: an event ledger, timing overview, and model-call explorer in the conversation view ring."
 kind: "package-reference"
 ---
 
@@ -10,6 +10,8 @@ English | [中文](README.zh.md)
 ## Summary
 
 The Trajectory tab lets you inspect agent activity as a turn-aware ledger and interactive timing overview. It groups User, Assistant, Tool, nested Subtool, and compaction records, marks turn and step boundaries, and opens a record inspector for token usage, duration, input, output, timing, images, and attachment summaries. Long histories open at the current tail, load older pages on demand, and render only visible rows. During streaming, the view follows the tail until you scroll upward, and in-flight records show a start marker without inventing elapsed time.
+
+The Workflow tab organizes the same recorded activity by user turn and model call, with request, response, and tool details.
 
 ## Table of Contents
 
@@ -26,6 +28,8 @@ The Trajectory tab lets you inspect agent activity as a turn-aware ledger and in
 ## Use this package
 
 Open the Trajectory tab in the conversation's view ring to inspect agent activity as an event ledger and timeline. The ledger covers records with an explicit loading row until the initial tail is positioned; while an older prefix remains unloaded, a first-row control loads one earlier page on click and shows the shared ongoing loader while that page is pending.
+
+Open the Workflow tab to follow each user turn through its model requests, responses, and tool calls. Select a request to inspect the recorded system prompt, provider-neutral message history, and tool definitions; response and tool cards expose their recorded content, status, duration, and token usage. Earlier Session pages load on demand, and totals cover the loaded event window. Workflow reads the same Session and Trajectory data as the ledger and does not change model requests.
 
 ### Inspecting records
 
@@ -54,6 +58,8 @@ A fixed Overview above the ledger projects real record start/duration timing fro
 <summary>Implementation internals — click to expand</summary>
 
 The view is a pure projection: Trajectory-owned Definitions assemble business records from the shared Session window — including durable cancellation-finalized prefixes, chunk-only interruption fallbacks, and interrupted Tool records — so Trajectory neither reads nor changes the Chat conversation snapshot. Its steering classifier retains only next-step Inbox IDs through persistent splice state and shares each current claimed batch across later Contexts.
+
+Workflow groups the Trajectory layout by user turn and model step, and reconstructs each request's provider-neutral messages from the loaded Session surface events. It adapts [dsh-plugin-agent-workflow](https://github.com/xuanyuanzhifeng/dsh-plugin-agent-workflow), distributed under the [MIT license](LICENSE).
 
 Native and nested PTC Tool results retain their raw structured error details and presentation metadata. Failed records show the error code in the ledger and the error name and code in the inspector.
 

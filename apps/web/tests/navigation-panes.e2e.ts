@@ -25,6 +25,7 @@ import { expectSelectableTerminalCommand } from './terminal-command-browser.ts'
 const SNAPSHOT_DIR = fileURLToPath(new URL('../../../snapshots/web/navigation-panes', import.meta.url))
 const SEED = join(SNAPSHOT_DIR, 'session.v3.jsonl')
 const TRAJECTORY_EXPECTED = join(SNAPSHOT_DIR, 'trajectory.expected.md')
+const WORKFLOW_EXPECTED = join(SNAPSHOT_DIR, 'workflow.expected.md')
 const TIMING_EXPECTED = join(SNAPSHOT_DIR, 'timing.expected.md')
 const SEARCH_EXPECTED = join(SNAPSHOT_DIR, 'search-results.expected.md')
 const TERMINAL_EXPECTED = join(SNAPSHOT_DIR, 'terminal-card.expected.md')
@@ -298,6 +299,21 @@ describe('web e2e: navigation & panes over a rich seeded session', () => {
     await details.getByRole('button', { name: 'Close details' }).click()
   }, 60_000)
 
+  it.skipIf(MODE === 'record')('renders recorded model and tool activity in the workflow view', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-navigation-workflow'))
+    await ensureSeedOpen(page)
+    await page.getByRole('tab', { name: 'Workflow' }).click()
+    const workflow = page.getByRole('region', { name: 'Agent workflow' })
+    await workflow.getByRole('button', { name: /^Conversation 1:/ }).click()
+    await workflow.getByRole('button', { name: 'REQUEST 1' }).click()
+    await expect.poll(() => workflow.getByRole('region', { name: 'Request details' }).count()).toBe(1)
+    const snapshot = (await captureStableAria(page, '[aria-label="Agent workflow"]', scaffold.workspaceCwd, {
+      replacements: [[scaffold.workspaceCwd.replaceAll('\\', '\\\\'), '{{cwd}}']],
+    }))
+      .split(SEED_ID).join('{{seededId}}')
+    await compareOrRefreshGolden(WORKFLOW_EXPECTED, snapshot, MODE)
+  }, 60_000)
+
   it.skipIf(MODE === 'record')('restores Assistant timing from recorded history', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-navigation-timing'))
     await ensureSeedOpen(page)
@@ -550,7 +566,7 @@ describe('web e2e: navigation & panes over a rich seeded session', () => {
     await assertFixtureInventory(CODE_CARD_DIR, ['code-card.expected.md'])
     await assertFixtureInventory(SNAPSHOT_DIR, [
       'session.v3.jsonl', 'search-results.expected.md', 'trajectory.expected.md',
-      'terminal-card.expected.md', 'timing.expected.md',
+      'terminal-card.expected.md', 'timing.expected.md', 'workflow.expected.md',
     ])
   })
 })

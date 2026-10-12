@@ -3,20 +3,20 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/client/ui-trajectory/README.md
 /:
-  en: b9065ee3da8927c2
-  zh: 36a38fa86d552b46
+  en: 02bba4beaf3deb84
+  zh: 4cb5d178aada6285
 /deepseek-ai-dsh-client-ui-trajectory:
   en: 60e3cab036a4a8c6
   zh: 2a400cd0efd99284
 /deepseek-ai-dsh-client-ui-trajectory/summary:
-  en: dc75677138d05dc6
-  zh: 6e11553a5caf4716
+  en: 709939b219ca6f68
+  zh: f58794c17a12e218
 /deepseek-ai-dsh-client-ui-trajectory/table-of-contents:
   en: d152484eb41ac6b4
   zh: 09388d293f9be9cb
 /deepseek-ai-dsh-client-ui-trajectory/use-this-package:
-  en: 4bd17d05b8385675
-  zh: 5174e27f754f2a03
+  en: 513943d936c46e3f
+  zh: e9c441bfb4f73747
 /deepseek-ai-dsh-client-ui-trajectory/use-this-package/inspecting-records:
   en: e4ba2d9cab2fb258
   zh: 7db041270420b2ba
@@ -24,8 +24,8 @@
   en: 0f4ee2189324ac06
   zh: 12e76fed22c09bc1
 /deepseek-ai-dsh-client-ui-trajectory/understand-the-implementation:
-  en: 74cc8fc87241da34
-  zh: cd72ff9c0fdd2575
+  en: 1587c95eefc7f30e
+  zh: eb65f9e7af3dae56
 /deepseek-ai-dsh-client-ui-trajectory/understand-the-implementation/virtual-rows:
   en: c85e342bc7eee4e6
   zh: 9feab66ef1755b94

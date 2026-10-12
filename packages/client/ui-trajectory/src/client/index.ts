@@ -27,6 +27,7 @@ import {
 import type { TrajectorySnapshot } from './trajectory-contract.ts'
 import { registerTrajectoryToolDefinition } from './trajectory-tool-definition.ts'
 import { TrajectoryView, type TrajectoryViewInjected } from './TrajectoryView.tsx'
+import { registerWorkflowView } from './workflow/index.ts'
 
 export type { TrajectoryKey } from './locales.ts'
 export type {
@@ -72,6 +73,7 @@ export function apply(ctx: Context): void {
   registerTrajectoryToolDefinition(ctx)
   registerTrajectoryCompactionDefinitions(ctx)
   registerTrajectoryConversationView(ctx)
+  registerWorkflowView(ctx)
   ctx.uiSession.provide({
     hooks: ['trajectory'],
     resolve: binding => ({ hooks: { trajectory: trajectorySource(binding) } }),

@@ -1,0 +1,73 @@
+- region "Agent workflow":
+  - strong: Workflow
+  - strong: "2"
+  - text: User turns
+  - strong: "3"
+  - text: Model calls
+  - strong: "3"
+  - text: Tool calls
+  - strong: {{duration}}
+  - text: Total duration
+  - complementary "User turns":
+    - strong: User turns
+    - text: "2"
+    - 'button "Conversation 1: NavScenario: first r… {{clock}} 2 model calls · 3 tools Complete"':
+      - strong: "Conversation 1: NavScenario: first r…"
+      - time: {{clock}}
+      - text: 2 model calls · 3 tools Complete
+    - 'button "Conversation 2: Reply in markdown wi… {{clock}} 1 model calls · 0 tools Complete"':
+      - strong: "Conversation 2: Reply in markdown wi…"
+      - time: {{clock}}
+      - text: 1 model calls · 0 tools Complete
+  - main:
+    - strong: "Conversation 1: NavScenario: first r…"
+    - text: {{clock}} {{duration}} 2 model calls 3 tools
+    - article:
+      - strong: "Model call #1"
+      - text: {{clock}} {{duration}} Input 7,820 Uncached 140 Cache hit 7,680 Output 197 Complete
+      - button "REQUEST 1" [expanded]: REQUEST deepseek-v4-flash System 1 Messages 2 Tool definitions 0
+      - button "RESPONSE 1": "RESPONSE The user wants me to follow a specific navigation scenario. Let me: 1. Run bash to print \"NAVIGATION_OK\" 2. Read nav-a.md and nav-b.md in two read calls in ONE message 3. Reply with \"FIRST_DONE\" Let me start with the bash command and the reads. Reasoning 1 Content 0 Tool calls 3"
+      - button "Tool call bash":
+        - text: "bash {\"command\": \"echo NAVIGATION_OK\", \"description\": \"Print NAVIGATION_OK\"} NAVIGATION_OK"
+        - time: {{duration}}
+      - button "Tool call read":
+        - text: "read {\"file_path\": \"nav-a.md\"} <path>{{cwd}}/workspace/nav-a.md</path> <type>file</type> <content> 1: # alpha nav (End of file - total 1 lines) </content>"
+        - time: {{duration}}
+      - button "Tool call read":
+        - text: "read {\"file_path\": \"nav-b.md\"} <path>{{cwd}}/workspace/nav-b.md</path> <type>file</type> <content> 1: # beta nav (End of file - total 1 lines) </content>"
+        - time: {{duration}}
+      - region "Request details":
+        - strong: Request details
+        - button "Collapse details"
+        - heading "System prompt" [level=4]
+        - text: JSON
+        - button "Copy"
+        - button "Open large JSON viewer"
+        - text: "{"
+        - tree "System prompt JSON":
+          - 'treeitem "system:\"{{system}}\""'
+        - text: "}"
+        - heading "Messages" [level=4]
+        - text: JSON
+        - button "Copy"
+        - button "Open large JSON viewer"
+        - text: "{"
+        - tree "Messages JSON":
+          - 'treeitem "Expand JSON node messages:[{role: \"system\", content: […], source: {…}, id: \"{{uuid}}\"}, {content: […], source: {…}, role: \"user\", id: \"{{uuid}}\"}]"':
+            - button "Expand JSON node"
+            - text: "messages:[{role: \"system\", content: […], source: {…}, id: \"{{uuid}}\"}, {content: […], source: {…}, role: \"user\", id: \"{{uuid}}\"}]"
+        - text: "}"
+        - heading "Tool definitions" [level=4]
+        - text: JSON
+        - button "Copy"
+        - button "Open large JSON viewer"
+        - text: "{"
+        - tree "Tool definitions JSON":
+          - treeitem "tools:[]"
+        - text: "}"
+    - article:
+      - strong: "Model call #2"
+      - text: {{clock}} {{duration}} Input 8,157 Uncached 349 Cache hit 7,808 Output 56 Complete
+      - button "REQUEST 2": REQUEST deepseek-v4-flash System 1 Messages 6 Tool definitions 0
+      - button "RESPONSE 2": RESPONSE FIRST_DONE Reasoning 1 Content 1 Tool calls 0
+      - text: Final reply

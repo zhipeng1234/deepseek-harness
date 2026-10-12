@@ -392,7 +392,9 @@ function mount(fixture: Awaited<ReturnType<typeof bench>>) {
           t: tZh,
         }
       })()
-      : injected
+      : entry.options.id === 'workflow'
+        ? { ...injected, t: fixture.ctx.locale.bind('workflow') }
+        : injected
     const viewProps: ConvViewProps = { ...owner, ...standardProps }
     return (
       <View
@@ -430,11 +432,12 @@ function mount(fixture: Awaited<ReturnType<typeof bench>>) {
 }
 
 describe('plugin registration', () => {
-  it('registers trajectory after chat on the ring', async () => {
+  it('registers trajectory and workflow after chat on the ring', async () => {
     const b = await bench()
     expect(tabsOf(b.slots)).toEqual([
       { id: 'chat', label: 'Chat' },
       { id: 'trajectory', label: 'Trajectory' },
+      { id: 'workflow', label: 'Workflow' },
     ])
   })
 
@@ -517,7 +520,7 @@ describe('tab switching in ConversationRoot', () => {
     const b = await bench()
     const view = mount(b)
     expect(screen.getByTestId('chat-body')).toBeTruthy()
-    expect(screen.getAllByRole('tab').map(t => t.textContent)).toEqual(['Chat', 'Trajectory'])
+    expect(screen.getAllByRole('tab').map(t => t.textContent)).toEqual(['Chat', 'Trajectory', 'Workflow'])
 
     fireEvent.click(screen.getByRole('tab', { name: 'Trajectory' }))
     expect(screen.queryByText(/turns ·/)).toBeNull()
@@ -539,12 +542,24 @@ describe('tab switching in ConversationRoot', () => {
   it('labels the trajectory tab in the active locale', async () => {
     const b = await bench()
     const labelOf = () => tabsOf(b.slots).find(tab => tab.id === 'trajectory')?.label
+    const workflowLabel = () => tabsOf(b.slots).find(tab => tab.id === 'workflow')?.label
     expect(labelOf()).toBe('Trajectory')
+    expect(workflowLabel()).toBe('Workflow')
     const locale = b.ctx.get('locale') as { setLocale(id: string): void }
     locale.setLocale('zh')
     expect(labelOf()).toBe('轨迹')
+    expect(workflowLabel()).toBe('工作流')
     locale.setLocale('en')
     expect(labelOf()).toBe('Trajectory')
+    expect(workflowLabel()).toBe('Workflow')
+  })
+
+  it('opens the workflow view from the conversation ring', async () => {
+    const b = await bench()
+    mount(b)
+    fireEvent.click(screen.getByRole('tab', { name: 'Workflow' }))
+    expect(screen.getByRole('region', { name: 'Agent workflow' })).toBeTruthy()
+    expect(screen.getByText('1 model calls')).toBeTruthy()
   })
 
   it('opens a local record inspector and switches payload tabs without opening chat details', async () => {
