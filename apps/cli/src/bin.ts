@@ -8,6 +8,8 @@
 
 import { getDshRuntimeVersion, loadLayeredEnv, StartupError } from '@deepseek-ai/dsh-app-boot'
 import { resolveDshHome } from '@deepseek-ai/dsh-home-paths'
+import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { parseDshArgs } from './args.ts'
 import { reportStartupFailure } from './startup-diagnostics.ts'
 import type { RunProfileOptions } from './profile-boot.ts'
@@ -73,6 +75,6 @@ export async function runCli(options: RunCliOptions = {}): Promise<void> {
   }
 }
 
-if (import.meta.main) {
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   await runCli()
 }
